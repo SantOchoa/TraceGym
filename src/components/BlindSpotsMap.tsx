@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
+import { toPng } from 'html-to-image';
 import { Concept, ConceptStat, Attempt } from '../types';
 import { CONCEPTS_META } from '../data/snippets';
 import { 
@@ -15,18 +16,25 @@ import {
   Play, 
   Trash2, 
   RefreshCw, 
-  Filter
+  Filter,
+  ImageDown,
+  LoaderCircle
 } from 'lucide-react';
+import { StatsExportCard } from './StatsExportCard';
 
 interface BlindSpotsMapProps {
+  streak: number;
   onStartPracticeConcept: (concept: Concept) => void;
   onStartReviewSession: () => void;
 }
 
 export const BlindSpotsMap: React.FC<BlindSpotsMapProps> = ({
+  streak,
   onStartPracticeConcept,
   onStartReviewSession
 }) => {
+  const exportRef = useRef<HTMLDivElement>(null);
+  const [isExporting, setIsExporting] = useState<boolean>(false);
   const [stats, setStats] = useState<ConceptStat[]>(getConceptStats());
   const [attempts, setAttempts] = useState<Attempt[]>(getAttempts());
   const [selectedFilter, setSelectedFilter] = useState<string>('all');
@@ -48,6 +56,34 @@ export const BlindSpotsMap: React.FC<BlindSpotsMapProps> = ({
       clearAllData();
       setStats(getConceptStats());
       setAttempts([]);
+    }
+  };
+
+  const handleExportPng = async () => {
+    const node = exportRef.current;
+    if (!node || isExporting) return;
+    setIsExporting(true);
+    try {
+      await document.fonts.ready;
+      const options = { pixelRatio: 2, backgroundColor: '#FAFAFA' };
+      let dataUrl: string;
+      try {
+        dataUrl = await toPng(node, options);
+      } catch (fontError) {
+        // Si no se pueden incrustar las fuentes web (p. ej. sin conexión), exporta con fuentes del sistema
+        console.warn('No se pudieron incrustar las fuentes, exportando sin ellas', fontError);
+        dataUrl = await toPng(node, { ...options, skipFonts: true });
+      }
+      const date = new Date().toISOString().slice(0, 10);
+      const link = document.createElement('a');
+      link.download = `tracegym-estadisticas-${date}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (e) {
+      console.error('Error exportando estadísticas a PNG', e);
+      window.alert('No se pudo generar la imagen PNG. Intenta de nuevo.');
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -76,8 +112,22 @@ export const BlindSpotsMap: React.FC<BlindSpotsMapProps> = ({
           </p>
         </div>
 
-        {/* Action Button: Repasar */}
-        <div className="flex items-center space-x-3">
+        {/* Action Buttons: Exportar + Repasar */}
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            onClick={handleExportPng}
+            disabled={isExporting}
+            className="btn-secondary text-xs flex items-center space-x-2 py-2 px-5 font-semibold disabled:opacity-60 disabled:pointer-events-none"
+            title="Descargar las estadísticas y la racha como imagen PNG"
+          >
+            {isExporting ? (
+              <LoaderCircle className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <ImageDown className="w-3.5 h-3.5" />
+            )}
+            <span>{isExporting ? 'Generando PNG…' : 'Exportar PNG'}</span>
+          </button>
+
           <button
             onClick={onStartReviewSession}
             className="btn-primary text-xs flex items-center space-x-2 py-2 px-5 font-bold"
@@ -392,6 +442,21 @@ export const BlindSpotsMap: React.FC<BlindSpotsMapProps> = ({
             </div>
           )}
         </div>
+      </div>
+
+      {/* Tarjeta fuera de pantalla usada solo para la exportación PNG */}
+      <div
+        aria-hidden="true"
+        style={{ position: 'fixed', left: -10000, top: 0, pointerEvents: 'none' }}
+      >
+        <StatsExportCard
+          ref={exportRef}
+          streak={streak}
+          stats={stats}
+          totalAttempts={totalAttempts}
+          globalAccuracy={globalAccuracy}
+          primaryBlindSpot={primaryBlindSpot}
+        />
       </div>
     </div>
   );

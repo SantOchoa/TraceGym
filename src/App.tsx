@@ -227,6 +227,7 @@ export const App: React.FC = () => {
         {/* Blind Spots Analytics Map Tab */}
         {activeTab === 'blindspots' && (
           <BlindSpotsMap
+            streak={streak}
             onStartPracticeConcept={(concept) => {
               setSelectedConcept(concept);
               loadChallenge(concept, selectedDifficulty);
