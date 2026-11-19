@@ -42,6 +42,12 @@ En los parciales universitarios de programación presenciales, los profesores ev
    * **Métricas Locales:** Precisión por concepto, intentos y tasa global en `localStorage` (100% privado).
    * **Algoritmo de Repetición Espaciada (1, 3 y 7 días):** El botón *«Repasar»* prioriza automáticamente los conceptos fallados.
    * **Modo Sesión 20 Minutos:** Batería express de 5 retos contra reloj simulando la presión de un parcial presencial.
+   * **Exportar PNG:** Descarga una imagen con tus estadísticas y tu racha de práctica.
+
+5. **Coach IA (Gemini):**
+   * **Diagnóstico y recomendaciones:** Gemini analiza tus estadísticas, historial y racha, y elige retos del banco en el orden en que conviene hacerlos.
+   * **Ejercicios nuevos:** Gemini escribe un ejercicio para el concepto y la dificultad que elijas; Pyodide lo ejecuta y el motor de mutaciones lo convierte en reto, así la salida correcta siempre la calcula Python.
+   * Se envían a Gemini solo estadísticas de práctica, nunca datos personales.
 
 ---
 
@@ -59,6 +65,7 @@ En los parciales universitarios de programación presenciales, los profesores ev
 * **Motor Python:** Pyodide WebAssembly (Python 3.12 en navegador)
 * **Iconos:** Lucide React
 * **Efectos:** Canvas Confetti
+* **IA:** Google Gemini API (`generateContent`)
 
 ---
 
@@ -78,6 +85,19 @@ npm run dev
 # 4. Construir para producción
 npm run build
 ```
+
+### Configurar Gemini (Coach IA)
+
+1. Crea una clave en [Google AI Studio](https://aistudio.google.com/apikey).
+2. Copia `.env.example` como `.env.local` (git lo ignora) y pon tu clave:
+   ```bash
+   VITE_GEMINI_API_KEY=tu_clave
+   # Opcional, por defecto gemini-4-hydrogen
+   VITE_GEMINI_MODEL=gemini-4-hydrogen
+   ```
+3. Reinicia `npm run dev`. Para publicar, `npm run deploy` incluye la clave en el build. En GitHub Actions, crea el secreto `GEMINI_API_KEY` (y, si quieres, la variable `GEMINI_MODEL`).
+
+> ⚠️ La clave queda dentro del JavaScript publicado y cualquiera que abra el sitio puede verla. En Google Cloud Console, restríngela a la API de Gemini y al sitio web `https://santochoa.github.io/*`, y vigila su uso.
 
 ---
 

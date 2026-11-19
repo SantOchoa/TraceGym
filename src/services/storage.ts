@@ -209,4 +209,5 @@ export function clearAllData(): void {
   localStorage.removeItem(STORAGE_KEY_ATTEMPTS);
   localStorage.removeItem(STORAGE_KEY_SPACED);
   localStorage.removeItem(STORAGE_KEY_STREAK);
+  localStorage.removeItem('tracegym_ai_coach_v1');
 }

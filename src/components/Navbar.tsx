@@ -1,9 +1,10 @@
 import React from 'react';
-import { Target, Zap, Clock, Code2, RefreshCw } from 'lucide-react';
+import { Target, Zap, Clock, Code2, RefreshCw, Sparkles } from 'lucide-react';
+import { AppTab } from '../types';
 
 interface NavbarProps {
-  activeTab: 'challenge' | 'blindspots' | 'custom' | 'session';
-  setActiveTab: (tab: 'challenge' | 'blindspots' | 'custom' | 'session') => void;
+  activeTab: AppTab;
+  setActiveTab: (tab: AppTab) => void;
   streak: number;
   pyodideReady: boolean;
   onReviewClick: () => void;
@@ -41,10 +42,10 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         {/* Navigation Tabs */}
-        <nav className="hidden md:flex items-center space-x-1 bg-[#F4F4F5] p-1 rounded-full border border-[#E4E4E7]">
+        <nav className="hidden xl:flex items-center space-x-1 bg-[#F4F4F5] p-1 rounded-full border border-[#E4E4E7]">
           <button
             onClick={() => setActiveTab('challenge')}
-            className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-200 ${
+            className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200 ${
               activeTab === 'challenge'
                 ? 'bg-white text-[#0A0A0A] shadow-xs font-semibold'
                 : 'text-[#71717A] hover:text-[#0A0A0A]'
@@ -55,7 +56,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             onClick={() => setActiveTab('blindspots')}
-            className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-200 flex items-center space-x-1.5 ${
+            className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200 flex items-center space-x-1.5 ${
               activeTab === 'blindspots'
                 ? 'bg-white text-[#0A0A0A] shadow-xs font-semibold'
                 : 'text-[#71717A] hover:text-[#0A0A0A]'
@@ -67,7 +68,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             onClick={() => setActiveTab('session')}
-            className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-200 flex items-center space-x-1.5 ${
+            className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200 flex items-center space-x-1.5 ${
               activeTab === 'session'
                 ? 'bg-white text-[#0A0A0A] shadow-xs font-semibold'
                 : 'text-[#71717A] hover:text-[#0A0A0A]'
@@ -79,7 +80,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             onClick={() => setActiveTab('custom')}
-            className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-200 flex items-center space-x-1.5 ${
+            className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200 flex items-center space-x-1.5 ${
               activeTab === 'custom'
                 ? 'bg-white text-[#0A0A0A] shadow-xs font-semibold'
                 : 'text-[#71717A] hover:text-[#0A0A0A]'
@@ -87,6 +88,18 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <Code2 className="w-3.5 h-3.5 text-[#71717A]" />
             <span>Pegar Código</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('coach')}
+            className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200 flex items-center space-x-1.5 ${
+              activeTab === 'coach'
+                ? 'bg-white text-[#0A0A0A] shadow-xs font-semibold'
+                : 'text-[#71717A] hover:text-[#0A0A0A]'
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5 text-[#FF0033]" />
+            <span>Coach IA</span>
           </button>
         </nav>
 
@@ -121,7 +134,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {/* Mobile nav */}
-      <div className="flex md:hidden px-4 py-2 bg-white border-t border-[#E5E7EB] justify-around text-xs">
+      <div className="flex xl:hidden px-4 py-2 bg-white border-t border-[#E5E7EB] justify-around text-xs">
         <button
           onClick={() => setActiveTab('challenge')}
           className={`py-1 px-2 ${activeTab === 'challenge' ? 'text-[#0A0A0A] font-bold border-b-2 border-[#FF0033]' : 'text-[#71717A]'}`}
@@ -145,6 +158,12 @@ export const Navbar: React.FC<NavbarProps> = ({
           className={`py-1 px-2 ${activeTab === 'custom' ? 'text-[#0A0A0A] font-bold border-b-2 border-[#FF0033]' : 'text-[#71717A]'}`}
         >
           Pegar
+        </button>
+        <button
+          onClick={() => setActiveTab('coach')}
+          className={`py-1 px-2 ${activeTab === 'coach' ? 'text-[#0A0A0A] font-bold border-b-2 border-[#FF0033]' : 'text-[#71717A]'}`}
+        >
+          Coach IA
         </button>
       </div>
     </header>

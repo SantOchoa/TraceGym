@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { CodeSnippet, Concept, SnippetMutationOption } from '../types';
 import { CONCEPTS_META } from '../data/snippets';
-import { generateCandidateMutations } from '../services/mutationEngine';
-import { runPythonWithTrace } from '../services/pythonRunner';
+import { buildChallengeFromCode, ChallengeBuildError } from '../services/challengeBuilder';
 import { Code2, Play, AlertCircle, Sparkles } from 'lucide-react';
 
 interface CustomSnippetModalProps {
@@ -50,64 +49,19 @@ export const CustomSnippetModal: React.FC<CustomSnippetModalProps> = ({
     setIsProcessing(true);
 
     try {
-      // 1. Run original code in Pyodide
-      const origExec = await runPythonWithTrace(code, 4000);
-      if (origExec.error) {
-        setErrorMessage(`Error sintáctico o de ejecución en tu código original:\n${origExec.error}`);
-        setIsProcessing(false);
-        return;
-      }
-
-      // 2. Search for syntax mutations
-      const candidates = generateCandidateMutations(code);
-      if (candidates.length === 0) {
-        setErrorMessage('El código pegado no admite ninguna de las mutaciones sintácticas definidas por el motor (operadores, range, slices, mutaciones in-place).');
-        setIsProcessing(false);
-        return;
-      }
-
-      // 3. Test candidates to find one that runs without error and yields DIFFERENT output
-      let validMutation: SnippetMutationOption | null = null;
-
-      for (const cand of candidates) {
-        const mutExec = await runPythonWithTrace(cand.mutatedCode, 4000);
-        if (!mutExec.error && mutExec.stdout.trim() !== origExec.stdout.trim()) {
-          validMutation = {
-            id: `custom_mut_${Date.now()}`,
-            mutationType: cand.mutationType,
-            line: cand.line,
-            originalSnippet: cand.originalSnippet,
-            mutatedSnippet: cand.mutatedSnippet,
-            mutatedCode: cand.mutatedCode,
-            expectedMutatedOutput: mutExec.stdout.trim(),
-            hint1_concept: cand.hint1_concept,
-            hint2_line: cand.hint2_line,
-            explanation: cand.explanation
-          };
-          break;
-        }
-      }
-
-      if (!validMutation) {
-        setErrorMessage('Las mutaciones generadas producen la misma salida que el original o provocan errores. Prueba con otro fragmento.');
-        setIsProcessing(false);
-        return;
-      }
-
-      // 4. Create custom CodeSnippet object
-      const customSnippet: CodeSnippet = {
-        id: `custom_${Date.now()}`,
-        title: 'Reto Personalizado del Estudiante',
+      const { snippet, mutation } = await buildChallengeFromCode(code, {
         concept,
         difficulty: 'medio',
-        originalCode: code,
-        expectedOriginalOutput: origExec.stdout.trim(),
-        mutations: [validMutation]
-      };
-
-      onChallengeCreated(customSnippet, validMutation);
+        title: 'Reto Personalizado del Estudiante',
+        idPrefix: 'custom'
+      });
+      onChallengeCreated(snippet, mutation);
     } catch (e: any) {
-      setErrorMessage(`Fallo al procesar el código: ${e?.message || e}`);
+      if (e instanceof ChallengeBuildError) {
+        setErrorMessage(e.message);
+      } else {
+        setErrorMessage(`Fallo al procesar el código: ${e?.message || e}`);
+      }
     } finally {
       setIsProcessing(false);
     }

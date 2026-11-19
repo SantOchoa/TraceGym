@@ -8,6 +8,8 @@ export type Concept =
 
 export type Difficulty = 'básico' | 'medio' | 'avanzado';
 
+export type AppTab = 'challenge' | 'blindspots' | 'custom' | 'session' | 'coach';
+
 export interface ConceptMeta {
   id: Concept;
   label: string;

@@ -35,6 +35,9 @@ jobs:
 
       - name: Build project
         run: npm run build
+        env:
+          VITE_GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          VITE_GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

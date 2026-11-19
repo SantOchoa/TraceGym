@@ -5,7 +5,8 @@ import {
   CodeSnippet, 
   SnippetMutationOption, 
   ExecutionResult, 
-  Attempt 
+  Attempt,
+  AppTab
 } from './types';
 import { SNIPPETS_BANK } from './data/snippets';
 import { getAvailableMutation } from './services/mutationEngine';
@@ -19,9 +20,10 @@ import { VerificationView } from './components/VerificationView';
 import { BlindSpotsMap } from './components/BlindSpotsMap';
 import { CustomSnippetModal } from './components/CustomSnippetModal';
 import { SessionModeModal } from './components/SessionModeModal';
+import { AiCoachView } from './components/AiCoachView';
 
 export const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'challenge' | 'blindspots' | 'custom' | 'session'>('challenge');
+  const [activeTab, setActiveTab] = useState<AppTab>('challenge');
   const [selectedConcept, setSelectedConcept] = useState<Concept>('recursion');
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>('básico');
   const [streak, setStreak] = useState<number>(getStreak());
@@ -162,6 +164,20 @@ export const App: React.FC = () => {
     }
   };
 
+  // Practice a specific bank snippet recommended by the AI coach
+  const handlePracticeSnippet = (snippetId: string) => {
+    const snippet = SNIPPETS_BANK.find(s => s.id === snippetId);
+    if (!snippet) return;
+    const mutation = getAvailableMutation(snippet);
+    if (!mutation) return;
+    setCurrentSnippet(snippet);
+    setCurrentMutation(mutation);
+    setSelectedConcept(snippet.concept);
+    setSelectedDifficulty(snippet.difficulty);
+    setVerificationData(null);
+    setActiveTab('challenge');
+  };
+
   // Handle custom snippet creation
   const handleCustomChallengeCreated = (
     customSnippet: CodeSnippet,
@@ -242,6 +258,15 @@ export const App: React.FC = () => {
           <CustomSnippetModal
             onChallengeCreated={handleCustomChallengeCreated}
             onCancel={() => setActiveTab('challenge')}
+          />
+        )}
+
+        {/* AI Coach (Gemini) Tab */}
+        {activeTab === 'coach' && (
+          <AiCoachView
+            streak={streak}
+            onPracticeSnippet={handlePracticeSnippet}
+            onPracticeGenerated={handleCustomChallengeCreated}
           />
         )}
 
