@@ -1,0 +1,143 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-bright-red: #FF0033;
+    --color-bg-light: #FAFAFA;
+    --color-card-light: #FFFFFF;
+    --color-border-light: #E5E7EB;
+  }
+
+  html {
+    font-size: 15px; /* Tamaño refinado y elegante */
+    letter-spacing: -0.011em;
+  }
+
+  body {
+    background-color: #FAFAFA;
+    color: #0A0A0A;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    overflow-x: hidden;
+    line-height: 1.5;
+  }
+
+  * {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace !important;
+    letter-spacing: normal;
+  }
+}
+
+/* Regla estricta del usuario: Si hay texto en rojo debe estar con letra cursiva elegante */
+.text-red-elegant,
+.text-red-300,
+.text-red-400,
+.text-red-500,
+.text-red-600,
+.text-bright-red,
+[class*="text-red-"] {
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif !important;
+  font-style: italic !important;
+  letter-spacing: 0.015em;
+}
+
+[class*="#FF0033"],
+[class*="#ff0033"] {
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif !important;
+  font-style: italic !important;
+}
+
+/* Animaciones táctiles de botones en tema claro */
+.btn-primary {
+  position: relative;
+  background-color: #FF0033;
+  color: #FFFFFF !important;
+  font-weight: 600;
+  border-radius: 9999px;
+  padding: 0.5rem 1.25rem;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 10px rgba(255, 0, 51, 0.22);
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1.5px) scale(1.015);
+  box-shadow: 0 4px 18px rgba(255, 0, 51, 0.38);
+  background-color: #E6002E;
+}
+
+.btn-primary:active {
+  transform: translateY(1px) scale(0.97);
+}
+
+.btn-secondary {
+  position: relative;
+  background-color: #FFFFFF;
+  color: #111111;
+  border: 1px solid #E5E7EB;
+  border-radius: 9999px;
+  padding: 0.5rem 1.25rem;
+  font-weight: 500;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-secondary:hover {
+  background-color: #F8F9FA;
+  border-color: #D1D5DB;
+  color: #000000;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.07);
+}
+
+.btn-secondary:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.btn-danger-outline {
+  position: relative;
+  background-color: #FFF5F6;
+  color: #FF0033;
+  border: 1px solid #FFCCD3;
+  border-radius: 9999px;
+  padding: 0.45rem 1.15rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-danger-outline:hover {
+  background-color: #FF0033;
+  color: #FFFFFF !important;
+  font-style: normal !important;
+  border-color: #FF0033;
+  box-shadow: 0 3px 12px rgba(255, 0, 51, 0.3);
+  transform: translateY(-1.5px);
+}
+
+/* Custom scrollbars en tema claro */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F1F1F1;
+}
+::-webkit-scrollbar-thumb {
+  background: #D1D5DB;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #FF0033;
+}
